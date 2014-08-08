@@ -1,20 +1,65 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research Peer Assessment 1"
+author: "Alan C Bonnici"
+date: "Friday, August 08, 2014"
+output: html_document
+---
 
+Activity Monitoring Data Analysis
+=================================
 
-## Loading and preprocessing the data
+What follows is a data analysis of an activity monitoring device. The data are data collected by an activity monitoring device worn by an anonymous individual. The data was collected at 5 minute intervals through out the day during the months of October and November 2012. Included is the number of steps taken in each 5 minute interval.
 
+```{r init, echo=FALSE, results='hide'}
+## create the directory if it does not exists. 
+if (!file.exists("./data")) {
+    dir.create("./data")
+}
 
+zipFileNm <- "./data/activity.zip"
+dLoadFileNm <- "./data/sourceDt.RData"
 
-## What is mean total number of steps taken per day?
+## if the zip file does not exist download the file
+if (!file.exists(zipFileNm)) {
+    # this file stores the date when the archive was downloaded
+    
+    url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+    download.file(url, destfile = zipFileNm)
+    
+    # extract the archive
+    unzip(zipFileNm, overwrite=TRUE, exdir="./data")
+    
+    # update the date the file was downloaded
+    downloadDtTm <- format(Sys.time(), "%b %d %Y at %H:%M:%S")
+    save(downloadDtTm, file = dLoadFileNm)        
+} else {
+    load(dLoadFileNm, envir=environment())    
+}
 
+```
 
+The data was downloaded from the url https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip. It was downloaded on **`r downloadDtTm`**. 
 
-## What is the average daily activity pattern?
+```{r loadProcData}
+data <- read.csv("./data/activity.csv", header = TRUE)
 
+# Convert the data field to a date
+```
 
+The read data consists of `r nrow(data)` rows and `r ncol(data)` columns. The column names are **`r names(data)`**.
 
-## Imputing missing values
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
+```{r}
+summary(cars)
+```
 
-## Are there differences in activity patterns between weekdays and weekends?
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
