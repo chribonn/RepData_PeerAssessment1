@@ -11,7 +11,7 @@ Activity Monitoring Data Analysis
 What follows is a data analysis of an activity monitoring device. The data are data collected by an activity monitoring device worn by an anonymous individual. The data was collected at 5 minute intervals through out the day during the months of October and November 2012. Included is the number of steps taken in each 5 minute interval.
 
 ```{r init, results='hide'}
-## create the directory if it does not exists. 
+# create the directory if it does not exists. 
 if (!file.exists("./data")) {
     dir.create("./data")
 }
@@ -19,7 +19,7 @@ if (!file.exists("./data")) {
 zipFileNm <- "./data/activity.zip"
 dLoadFileNm <- "./data/sourceDt.RData"
 
-## if the zip file does not exist download the file
+# if the zip file does not exist download the file
 if (!file.exists(zipFileNm)) {
     # this file stores the date when the archive was downloaded
     
@@ -50,7 +50,7 @@ data$date <- as.Date(as.character(data$date), format="%Y-%m-%d")
 
 The read data consists of `r nrow(data)` rows and `r ncol(data)` columns. The column names are **`r names(data)`** and their respective class is **`r sapply(data, class)`**.
 
-```{r loadLibraryies}
+```{r loadLibraries}
 # Install and load libraries used here
 for (x in c("ggplot2", "plyr", "grid", "gridExtra")) {
     if (x %in% rownames(installed.packages()) == FALSE) {
@@ -64,13 +64,14 @@ require(plyr)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
+```{r Chart1}
 data1 <- data[complete.cases(data$steps),1:2]
 plot1Data <- ddply(data1, .(date), summarize, totSteps = sum(steps))
 p <- ggplot(plot1Data, aes(x=date, y = totSteps))
 p <- p + geom_histogram(stat="identity")
 p <- p + ylab("Total Steps") + xlab("Date")
 p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_date(breaks = "5 days")
 p
 ```
 
@@ -96,7 +97,9 @@ The 5-minute interval, on average across all the days with the largest number of
 ##Inputing missing values
 
 ```{r MissingValues}
-# The number of rows with NA values can be computed by subtracting all the read rows from the number of complete cases computed for earlier parts of this solution.
+# The number of rows with NA values can be computed by subtracting all the read
+# rows from the number of complete cases computed for earlier parts of this
+# solution.
 missingVals <- nrow(data) - nrow(data1)
 ```
 
@@ -114,7 +117,7 @@ for (x in intervalNA) {
 }
 ```
 
-```{r Chart3a, fig.height=8}
+```{r Chart3, fig.height=8}
 plot3Data <- ddply(filledData, .(date), summarize, 
                    totSteps = sum(steps), 
                    meanSteps = mean(steps), 
